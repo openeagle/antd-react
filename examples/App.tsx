@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { ConfigProvider, DatePicker, message } from 'antd';
-import 'antd/dist/antd.less';
 import zhCN from 'antd/lib/locale/zh_CN';
 import moment, { Moment } from 'moment';
 import 'moment/dist/locale/zh-cn';
