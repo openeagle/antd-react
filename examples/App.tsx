@@ -6,7 +6,9 @@ import zhCN from 'antd/lib/locale/zh_CN';
 import moment from 'moment';
 import 'moment/dist/locale/zh-cn';
 
+const HomePage = lazy(() => import('./home/index'));
 const TestPage = lazy(() => import('./test/index'));
+const UseQueryFormPage = lazy(() => import('./use-query-form/index'));
 
 moment.locale('zh-cn');
 
@@ -16,10 +18,26 @@ function App() {
       <ConfigProvider locale={zhCN}>
         <Routes>
           <Route
+            path="/"
+            element={
+              <Suspense fallback={<>...</>}>
+                <HomePage />
+              </Suspense>
+            }
+          />
+          <Route
             path="/test"
             element={
               <Suspense fallback={<>...</>}>
                 <TestPage />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/use-query-form"
+            element={
+              <Suspense fallback={<>...</>}>
+                <UseQueryFormPage />
               </Suspense>
             }
           />

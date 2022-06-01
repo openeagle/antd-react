@@ -9,7 +9,9 @@
   },
   "dependencies": {
     "antd": "^4.20.6",
+    "js-serialization": "^0.0.1",
     "moment": "^2.29.3",
+    "qs": "^6.10.3",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-router-dom": "^6.3.0"
