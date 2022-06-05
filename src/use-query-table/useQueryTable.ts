@@ -1,13 +1,13 @@
 import { Reducer, useState } from "react";
 import { useReducer, useRef } from "react";
 import { useEffect, useMemo } from "react";
-import { useLocation } from "react-router-dom";
 import {
   FilterValue,
   SortOrder,
   TablePaginationConfig,
   SorterResult,
 } from "antd/es/table/interface";
+import useNavigation from '../use-navigation'
 
 export interface QueryTableHistoryState {
   table?: {
@@ -182,7 +182,7 @@ function useQueryTable<RecordType = any, Params = any>(
     manualRequest,
   } = option;
 
-  const location = useLocation();
+  const navigation = useNavigation();
   const [routeIndex, setRouteIndex] = useState<number>(-1);
 
   const [state, dispatch] = useReducer<
@@ -359,10 +359,10 @@ function useQueryTable<RecordType = any, Params = any>(
 
   useEffect(() => {
     // 同一路由只初始化一次，在首次访问和新开同路由页面时需要初始化
-    if (history.state.idx === routeIndex) {
+    if (navigation.index === routeIndex) {
       return;
     }
-    setRouteIndex(history.state.idx);
+    setRouteIndex(navigation.index);
     // TODO: react-router replace lead to losing cache.
     const historyState = ((history.state || {}) as any).table?.[tableName];
     if (historyState) {
@@ -398,7 +398,7 @@ function useQueryTable<RecordType = any, Params = any>(
         },
       });
     }
-  }, [ref, dispatch, location.key, routeIndex]);
+  }, [ref, dispatch, navigation.index, routeIndex]);
 
   return [state, instance] as [typeof state, typeof instance];
 }

@@ -1,7 +1,7 @@
 import { MutableRefObject, useState } from "react";
 import { useCallback, useEffect, useMemo } from "react";
-import { useLocation } from "react-router-dom";
 import { Form, FormInstance } from "antd";
+import useNavigation from '../use-navigation'
 import defaultSerializer from "../utils/serializer";
 
 declare type RecursivePartial<T> = T extends object
@@ -48,7 +48,7 @@ function useQueryForm<Values = any>(option: QueryFormOption<Values> = {}) {
     serializer: serializer = defaultSerializer,
   } = option;
 
-  const location = useLocation();
+  const navigation = useNavigation();
   const [routeIndex, setRouteIndex] = useState<number>(-1);
 
   const [innerForm] = Form.useForm<Values>();
@@ -74,10 +74,10 @@ function useQueryForm<Values = any>(option: QueryFormOption<Values> = {}) {
       return;
     }
     // 同一路由只初始化一次，在首次访问和新开同路由页面时需要初始化
-    if (history.state.idx === routeIndex) {
+    if (navigation.index === routeIndex) {
       return;
     }
-    setRouteIndex(history.state.idx);
+    setRouteIndex(navigation.index);
     const hisrotyCache = ((history.state || {}) as QueryFormHistoryState)
       .form?.[formName];
     if (hisrotyCache) {
@@ -92,7 +92,7 @@ function useQueryForm<Values = any>(option: QueryFormOption<Values> = {}) {
         }
       }
     }
-  }, [location.key, routeIndex, currentForm]);
+  }, [navigation.index, routeIndex, currentForm]);
 
   const persist = useCallback(() => {
     // 这里使用 history.replaceState 替换状态而不是使用 react-router 提供的方法是因为 react-router 在替换状态时会更新 router key
