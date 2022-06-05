@@ -1,8 +1,8 @@
 import useQueryForm from './useQueryForm';
 
 export type {
-  UseQueryFormHistoryState,
-  UseQueryFormOption,
+  QueryFormHistoryState,
+  QueryFormOption,
 } from './useQueryForm';
 
 export default useQueryForm;

@@ -9,6 +9,7 @@ import 'moment/dist/locale/zh-cn';
 const HomePage = lazy(() => import('./home/index'));
 const TestPage = lazy(() => import('./test/index'));
 const UseQueryFormPage = lazy(() => import('./use-query-form/index'));
+const UseQueryTablePage = lazy(() => import('./use-query-table/index'));
 
 moment.locale('zh-cn');
 
@@ -38,6 +39,14 @@ function App() {
             element={
               <Suspense fallback={<>...</>}>
                 <UseQueryFormPage />
+              </Suspense>
+            }
+          />
+          <Route
+            path="/use-query-table"
+            element={
+              <Suspense fallback={<>...</>}>
+                <UseQueryTablePage />
               </Suspense>
             }
           />
