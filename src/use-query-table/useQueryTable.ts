@@ -7,7 +7,7 @@ import {
   TablePaginationConfig,
   SorterResult,
 } from "antd/es/table/interface";
-import useNavigation from '../use-navigation'
+import useNavigation from "../use-navigation";
 
 export interface QueryTableHistoryState {
   table?: {
@@ -20,7 +20,7 @@ export interface QueryTableHistoryState {
 }
 
 export interface QueryTableState<RecordType> {
-  invalidate: boolean;
+  invalidate: number;
   pagination: {
     current: number;
     pageSize: number;
@@ -103,6 +103,7 @@ function reducer<RecordType>(
     case "LOAD_REQUEST": {
       return {
         ...state,
+        invalidate: 0,
         loading: true,
       };
     }
@@ -116,7 +117,6 @@ function reducer<RecordType>(
     case "LOAD_SUCCESS": {
       return {
         ...state,
-        invalidate: false,
         pagination: {
           ...state.pagination,
           total: action.payload.total,
@@ -130,7 +130,7 @@ function reducer<RecordType>(
       return {
         ...state,
         ...action.payload,
-        invalidate: action.payload.invalidate ?? true,
+        invalidate: action.payload.invalidate ?? 0,
       };
     }
     case "RESET": {
@@ -188,7 +188,7 @@ function useQueryTable<RecordType = any, Params = any>(
   const [state, dispatch] = useReducer<
     Reducer<QueryTableState<RecordType>, UseQueryTableAction<RecordType>>
   >(reducer, {
-    invalidate: false,
+    invalidate: 0,
     pagination: {
       current: defaultPagination?.current ?? defaultPageIndex,
       pageSize: defaultPagination?.pageSize ?? defaultPageSize,
@@ -233,16 +233,18 @@ function useQueryTable<RecordType = any, Params = any>(
         return ref.current.state.loading;
       },
       update(
-        settings: Pick<
-          QueryTableState<RecordType>,
-          "pagination" | "sorters" | "filters"
+        settings: Partial<
+          Pick<
+            QueryTableState<RecordType>,
+            "invalidate" | "pagination" | "sorters" | "filters"
+          >
         >
       ) {
         const { state: currState } = ref.current;
         dispatch({
           type: "UPDATE",
           payload: {
-            invalidate: true,
+            invalidate: settings.invalidate ?? 1,
             pagination: {
               ...currState.pagination,
               ...settings.pagination,
@@ -300,7 +302,7 @@ function useQueryTable<RecordType = any, Params = any>(
         dispatch({
           type: "RESET",
           payload: {
-            invalidate: true,
+            invalidate: 1,
             pagination: {
               current:
                 currOption.defaultPagination?.current ?? defaultPageIndex,
@@ -338,21 +340,25 @@ function useQueryTable<RecordType = any, Params = any>(
   }, [ref, dispatch]);
 
   useEffect(() => {
-    if (state.invalidate) {
-      history.replaceState(
-        Object.assign({}, history.state, {
-          table: {
-            ...history.state?.table,
-            [tableName]: {
-              pagination: ref.current.state.pagination,
-              sorters: ref.current.state.sorters,
-              filters: ref.current.state.filters,
+    if (!!state.invalidate) {
+      if (state.invalidate === 1) {
+        history.replaceState(
+          Object.assign({}, history.state, {
+            table: {
+              ...history.state?.table,
+              [tableName]: {
+                pagination: ref.current.state.pagination,
+                sorters: ref.current.state.sorters,
+                filters: ref.current.state.filters,
+              },
             },
-          },
-        }),
-        "",
-        window.location.pathname + window.location.search + window.location.hash
-      );
+          }),
+          "",
+          location.pathname +
+            location.search +
+            location.hash
+        );
+      }
       instance.reload();
     }
   }, [state.invalidate]);
@@ -370,7 +376,7 @@ function useQueryTable<RecordType = any, Params = any>(
         type: "UPDATE",
         payload: {
           ...historyState,
-          invalidate: true,
+          invalidate: 2,
         },
       });
     } else {
@@ -378,7 +384,7 @@ function useQueryTable<RecordType = any, Params = any>(
       dispatch({
         type: "UPDATE",
         payload: {
-          invalidate: !ref.current?.option.manualRequest,
+          invalidate: !ref.current?.option.manualRequest ? 1 : 0,
           pagination: {
             current:
               extras?.pagination?.current ??

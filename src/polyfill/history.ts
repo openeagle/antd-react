@@ -50,11 +50,11 @@ History.prototype.pushState = function (
   const state = Object.assign({}, data, {
     [key]: {
       key: createKey(),
-      index: index++,
+      index: ++index,
     },
   });
   const pushStateEvent = new HistoryEvent("pushstate", { state });
-  dispatchEvent(pushStateEvent);
+  window.dispatchEvent(pushStateEvent);
   nativePushState.call(this, state, unused, url);
 };
 
@@ -66,10 +66,14 @@ History.prototype.replaceState = function (
   const state = Object.assign({}, data, {
     [key]: {
       key: createKey(),
-      index: index,
+      index: history.state?.navigation?.index ?? -1,
     },
   });
   const replaceStateEvent = new HistoryEvent("replacestate", { state });
-  dispatchEvent(replaceStateEvent);
+  window.dispatchEvent(replaceStateEvent);
   nativeReplaceState.call(this, state, unused, url);
 };
+
+window.addEventListener("popstate", function (event) {
+  index = event.state?.navigation?.index ?? -1;
+});
