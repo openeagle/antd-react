@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
-import type { HistoryNavigation } from "../polyfill/history";
-import { HistoryEvent } from "../polyfill/history";
+import {
+  HistoryNavigation,
+  getCurrentNavigation,
+} from "../polyfill/history-event";
+import { HistoryEvent } from "../polyfill/history-event";
 
 const defaultNavigation = { key: "", index: -1 };
 
 function useNavigation() {
   const [navigation, setNavigation] = useState<HistoryNavigation>(
-    history.state?.navigation || defaultNavigation
+    getCurrentNavigation()
   );
   useEffect(() => {
     const handlePopState = (event: PopStateEvent) => {
