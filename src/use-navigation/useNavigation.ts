@@ -1,11 +1,6 @@
 import { useEffect, useState } from "react";
-import {
-  HistoryNavigation,
-  getCurrentNavigation,
-} from "../polyfill/history-event";
-import { HistoryEvent } from "../polyfill/history-event";
-
-const defaultNavigation = { key: "", index: -1 };
+import type { HistoryNavigation } from "history-event";
+import { HistoryEvent, getCurrentNavigation } from "history-event";
 
 function useNavigation() {
   const [navigation, setNavigation] = useState<HistoryNavigation>(

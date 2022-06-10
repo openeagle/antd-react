@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "antd": "^4.20.6",
+    "history-event": "^0.0.3",
     "js-serialization": "^0.0.1",
     "moment": "^2.29.3",
     "qs": "^6.10.3",

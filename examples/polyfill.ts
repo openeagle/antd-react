@@ -1,3 +1,3 @@
-import historyEventPolyfill from "../src/polyfill/history-event";
+import historyEventPolyfill from "history-event";
 
 historyEventPolyfill();
